@@ -1,29 +1,45 @@
-{ stdenv, fetchFromGitHub, pkgconfig, which, qmake, mkDerivation,
-  qtmultimedia, wrapQtAppsHook, frei0r, opencolorio, ffmpeg-full,
-  CoreFoundation }:
+{ stdenv
+, fetchFromGitHub
+, pkgconfig
+, which
+, cmake
+, mkDerivation
+
+, qtmultimedia
+, wrapQtAppsHook
+
+, frei0r
+, opencolorio
+, openimageio
+, openexr
+, ffmpeg-full
+
+, CoreFoundation }:
 
 mkDerivation rec {
   pname = "olive-editor";
-  version = "0.1.2";
+  version = "snapshot-2020-08-30";
 
   src = fetchFromGitHub {
     owner = "olive-editor";
     repo = "olive";
-    rev = version;
-    sha256 = "151g6jwhipgbq4llwib92sq23p1s9hm6avr7j4qq3bvykzrm8z1a";
+    rev = "e42ba3f9d4042eb062e0575ac3af8b187f1e064c";
+    sha256 = "16swl8651sbg3l0310h0j5408qrnzjiq7asgmwrjsmh5j2pidz1j";
   };
 
   nativeBuildInputs = [
     pkgconfig
     which
-    qmake
     wrapQtAppsHook
+    cmake
   ];
 
   buildInputs = [
     ffmpeg-full
     frei0r
     opencolorio
+    openimageio
+    openexr
     qtmultimedia
   ] ++ stdenv.lib.optional stdenv.isDarwin CoreFoundation;
 
