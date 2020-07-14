@@ -2426,6 +2426,8 @@ in {
 
   envs = callPackage ../development/python-modules/envs { };
 
+  enaml = callPackage ../development/python-modules/enaml { };
+
   etelemetry = callPackage ../development/python-modules/etelemetry { };
 
   eth-hash = callPackage ../development/python-modules/eth-hash { };
