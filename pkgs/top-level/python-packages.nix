@@ -545,6 +545,8 @@ in {
 
   build = callPackage ../development/python-modules/build { };
 
+  bytecode = callPackage ../development/python-modules/bytecode { };
+
   ciso8601 = callPackage ../development/python-modules/ciso8601 { };
 
   deepdiff = callPackage ../development/python-modules/deepdiff { };
