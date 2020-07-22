@@ -591,6 +591,29 @@ passthru.updateScript = [ ../../update.sh pname "--requested-release=unstable" ]
    </para>
   </section>
 
+  <section xml:id="ssec-run-phase-interactively">
+   <title>Running phases interactively</title>
+
+   <para>
+    To run the phases interactively, you can open the derivation in <command>nix-shell</command>:
+   <screen>
+   <prompt>$ </prompt>nix-shell '&lt;nixpkgs&gt;' -A hello
+   these paths will be fetched (0.69 MiB download, 0.69 MiB unpacked):
+   /nix/store/3x7dwzq014bblazs7kq20p9hyzz0qh8g-hello-2.10.tar.gz
+   copying path '/nix/store/3x7dwzq014bblazs7kq20p9hyzz0qh8g-hello-2.10.tar.gz' from 'https://cache.nixos.org'...
+   <prompt>[nix-shell:~]$ </prompt>unpackPhase
+   unpacking source archive /nix/store/3x7dwzq014bblazs7kq20p9hyzz0qh8g-hello-2.10.tar.gz
+   source root is hello-2.10
+   <prompt>[nix-shell:~]$ </prompt>cd hello-2.10
+   <prompt>[nix-shell:~/hello-2.10]$ </prompt>configurePhase
+   (...)
+   <prompt>[nix-shell:~/hello-2.10]$ </prompt>buildPhase
+   </screen>
+   Note that you will either run <command>$buildPhase</command> or <command>buildPhase</command>
+   depending on whether the phase was customized in the derivation.
+   </para>
+  </section>
+
   <section xml:id="ssec-unpack-phase">
    <title>The unpack phase</title>
 
