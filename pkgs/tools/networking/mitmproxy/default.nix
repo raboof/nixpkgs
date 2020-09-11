@@ -4,19 +4,30 @@ with python3Packages;
 
 buildPythonPackage rec {
   pname = "mitmproxy";
-  version = "5.1.1";
+  version = "5.2";
 
   src = fetchFromGitHub {
     owner  = pname;
     repo   = pname;
     rev    = "v${version}";
-    sha256 = "1lirlckpvd3c6s6q3p32w4k4yfna5mlgr1x9g39lhzzq0sdiz3lk";
+    sha256 = "0ja0aqnfmkvns5qmd51hmrvbw8dnccaks30gxgzgcjgy30rj4brq";
   };
 
   postPatch = ''
     # remove dependency constraints
-    sed 's/>=\([0-9]\.\?\)\+\( \?, \?<\([0-9]\.\?\)\+\)\?//' -i setup.py
+    sed 's/>=\([0-9]\.\?\)\+\( \?, \?<\([0-9]\.\?\)\+\)\?\( \?, \?\!=\([0-9]\.\?\)\+\)\?//' -i setup.py
   '';
+
+  patches = [
+    # This test doesn't work for us since we don't want to fetch the .git
+    ./0000-dont-test-git-version.patch
+    # nixpkgs ships urwid 2.1.1, to this can/should be applied.
+    # will be part of the next post-5.2 version:
+    (fetchpatch {
+      url = "https://github.com/${pname}/${pname}/commit/ea9177217208fdf642ffc54f6b1f6507a199350c.patch";
+      sha256 = "1z5r8izg5nvay01ywl3xc6in1vjfi9f144j057p3k5rzfliv49gg";
+    })
+  ];
 
   doCheck = (!stdenv.isDarwin);
 
