@@ -871,6 +871,21 @@ lib.makeScope newScope (self: with self; {
     meta.platforms = lib.platforms.unix;
   }) {};
 
+  libX11-181 = callPackage ({ stdenv, pkg-config, fetchurl, xorgproto, libxcb, xtrans }: stdenv.mkDerivation {
+    pname = "libX11";
+    version = "1.8.1";
+    builder = ./builder.sh;
+    src = fetchurl {
+      url = "mirror://xorg/individual/lib/libX11-1.8.1.tar.xz";
+      hash = "sha256-G8QaobvgFAHzMNdt+hnzhrecUYgce7/unrTifyLy2fc=";
+    };
+    hardeningDisable = [ "bindnow" "relro" ];
+    strictDeps = true;
+    nativeBuildInputs = [ pkg-config ];
+    buildInputs = [ xorgproto libxcb xtrans ];
+    meta.platforms = lib.platforms.unix;
+  }) {};
+
   # THIS IS A GENERATED FILE.  DO NOT EDIT!
   libXScrnSaver = callPackage ({ stdenv, pkg-config, fetchurl, xorgproto, libX11, libXext }: stdenv.mkDerivation {
     pname = "libXScrnSaver";

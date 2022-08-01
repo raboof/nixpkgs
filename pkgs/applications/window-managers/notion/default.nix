@@ -1,6 +1,6 @@
 { lib, stdenv, fetchFromGitHub, pkg-config
 , lua, gettext, which, groff, xmessage, xterm
-, readline, fontconfig, libX11, libXext, libSM
+, readline, fontconfig, libX11-181, libXext, libSM
 , libXinerama, libXrandr, libXft
 , xlibsWrapper, makeWrapper
 }:
@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ pkg-config makeWrapper groff ];
-  buildInputs = [ lua gettext which readline fontconfig libX11 libXext libSM
+  buildInputs = [ lua gettext which readline fontconfig libX11-181 libXext libSM
                   libXinerama libXrandr libXft xlibsWrapper ];
 
   buildFlags = [ "LUA_DIR=${lua}" "X11_PREFIX=/no-such-path" ];
