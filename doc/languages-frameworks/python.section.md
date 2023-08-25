@@ -8,9 +8,9 @@
 
 Several versions of the Python interpreter are available on Nix, as well as a
 high amount of packages. The attribute `python3` refers to the default
-interpreter, which is currently CPython 3.10. The attribute `python` refers to
+interpreter, which is currently CPython 3.11. The attribute `python` refers to
 CPython 2.7 for backwards-compatibility. It is also possible to refer to
-specific versions, e.g. `python311` refers to CPython 3.11, and `pypy` refers to
+specific versions, e.g. `python312` refers to CPython 3.12, and `pypy` refers to
 the default PyPy interpreter.
 
 Python is used a lot, and in different ways. This affects also how it is
@@ -325,7 +325,7 @@ on NixOS.
 { # ...
 
   environment.systemPackages = with pkgs; [
-    (python310.withPackages(ps: with ps; [ numpy toolz ]))
+    (python3.withPackages(ps: with ps; [ numpy toolz ]))
   ];
 }
 ```
@@ -976,10 +976,9 @@ with import <nixpkgs> {};
 
 ( let
     toolz = callPackage /path/to/toolz/release.nix {
-      buildPythonPackage = python310
-Packages.buildPythonPackage;
+      buildPythonPackage = python3Packages.buildPythonPackage;
     };
-  in python310.withPackages (ps: [
+  in python3.withPackages (ps: [
     ps.numpy
     toolz
   ])
@@ -1002,8 +1001,8 @@ and in this case the `python3` interpreter is automatically used.
 | python27   | python2, python | CPython 2.7 |
 | python38   |                 | CPython 3.8 |
 | python39   |                 | CPython 3.9 |
-| python310  | python3         | CPython 3.10 |
-| python311  |                 | CPython 3.11 |
+| python310  |                 | CPython 3.10 |
+| python311  | python3         | CPython 3.11 |
 | python312  |                 | CPython 3.12 |
 | pypy27     | pypy2, pypy     | PyPy2.7 |
 | pypy39     | pypy3           | PyPy 3.9 |
@@ -1028,7 +1027,7 @@ Each interpreter has the following attributes:
 - `buildEnv`. Function to build python interpreter environments with extra packages bundled together. See section *python.buildEnv function* for usage and documentation.
 - `withPackages`. Simpler interface to `buildEnv`. See section *python.withPackages function* for usage and documentation.
 - `sitePackages`. Alias for `lib/${libPrefix}/site-packages`.
-- `executable`. Name of the interpreter executable, e.g. `python3.10`.
+- `executable`. Name of the interpreter executable, e.g. `python3.11`.
 - `pkgs`. Set of Python packages for that specific interpreter. The package set can be modified by overriding the interpreter and passing `packageOverrides`.
 
 ### Optimizations {#optimizations}
@@ -1073,12 +1072,13 @@ sets are
 * `pkgs.python39Packages`
 * `pkgs.python310Packages`
 * `pkgs.python311Packages`
+* `pkgs.python312Packages`
 * `pkgs.pypyPackages`
 
 and the aliases
 
 * `pkgs.python2Packages` pointing to `pkgs.python27Packages`
-* `pkgs.python3Packages` pointing to `pkgs.python310Packages`
+* `pkgs.python3Packages` pointing to `pkgs.python311Packages`
 * `pkgs.pythonPackages` pointing to `pkgs.python2Packages`
 
 #### `buildPythonPackage` function {#buildpythonpackage-function}
@@ -1623,7 +1623,7 @@ with import <nixpkgs> {};
     packageOverrides = self: super: {
       pandas = super.pandas.overridePythonAttrs(old: {name="foo";});
     };
-  in pkgs.python310.override {
+  in pkgs.python3.override {
     inherit packageOverrides;
   };
 
@@ -1649,7 +1649,7 @@ with import <nixpkgs> {};
     packageOverrides = self: super: {
       scipy = super.scipy_0_17;
     };
-  in (pkgs.python310.override {
+  in (pkgs.python3.override {
     inherit packageOverrides;
   }).withPackages (ps: [
     ps.blaze
@@ -1667,11 +1667,11 @@ If you want the whole of Nixpkgs to use your modifications, then you can use
 let
   pkgs = import <nixpkgs> {};
   newpkgs = import pkgs.path { overlays = [ (self: super: {
-    python310 = let
+    python3 = let
       packageOverrides = python-self: python-super: {
         numpy = python-super.numpy_1_18;
       };
-    in super.python310.override {inherit packageOverrides;};
+    in super.python3.override {inherit packageOverrides;};
   } ) ]; };
 in newpkgs.inkscape
 ```
