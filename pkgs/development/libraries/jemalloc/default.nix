@@ -6,6 +6,8 @@
   autogen,
   autoconf,
   automake,
+  git,
+  less,
   # By default, jemalloc puts a je_ prefix onto all its symbols on OSX, which
   # then stops downstream builds (mariadb in particular) from detecting it. This
   # option should remove the prefix and give us a working jemalloc.
@@ -23,7 +25,8 @@ stdenv.mkDerivation rec {
     owner = "jemalloc";
     repo = "jemalloc";
     tag = version;
-    hash = "sha256-bb0OhZVXyvN+hf9BpPSykn5cGm87a0C+Y/iXKt9wTSs=";
+    hash = "sha256-BS9CUoQMoVprInnv7Vdj1LQTe9FxanXnbekw9GQXM2A=";
+    leaveDotGit = true;
   };
 
   patches = [
@@ -48,10 +51,14 @@ stdenv.mkDerivation rec {
     autogen
     autoconf
     automake
+    git
+    less
   ];
 
   preConfigure =
     ''
+      GIT_HASH=$(git log -1 --pretty=format:%h)
+      echo "${version}-0-g$GIT_HASH" > VERSION
       ./autogen.sh
     ''
     + lib.optionalString stdenv.hostPlatform.isDarwin ''
@@ -84,6 +91,11 @@ stdenv.mkDerivation rec {
 
   # Tries to link test binaries binaries dynamically and fails
   doCheck = !stdenv.hostPlatform.isStatic;
+
+  doInstallCheck = true;
+  installCheckPhase = ''
+    ! grep missing_version_try_git_fetch_tags $out/include/jemalloc/jemalloc.h
+  '';
 
   # Parallel builds break reproducibility.
   enableParallelBuilding = false;
