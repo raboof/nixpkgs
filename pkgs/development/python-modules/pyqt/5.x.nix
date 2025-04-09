@@ -50,6 +50,7 @@ buildPythonPackage rec {
   postPatch =
     # be more verbose
     ''
+      echo 'test'
       cat >> pyproject.toml <<EOF
     ''
     + lib.optionalString enableVerbose ''
