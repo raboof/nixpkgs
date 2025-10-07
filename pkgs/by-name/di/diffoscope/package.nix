@@ -51,7 +51,6 @@
   mono,
   ocaml,
   odt2txt,
-  oggvideotools,
   openssh,
   openssl,
   pdftk,
@@ -255,8 +254,6 @@ python.pkgs.buildPythonApplication rec {
         r2pipe
         # docx2txt, nixpkgs packages another project named the same, which does not work
       ])
-      # oggvideotools is broken on Darwin, please put it back when it will be fixed?
-      ++ lib.optionals stdenv.hostPlatform.isLinux [ oggvideotools ]
     )
   );
 
