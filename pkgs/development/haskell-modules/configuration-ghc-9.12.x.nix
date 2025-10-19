@@ -128,4 +128,7 @@ with haskellLib;
   interpolate =
     assert super.ghc.version == "9.12.2";
     dontCheck super.interpolate;
+  these = super.these.overrideAttrs(a: {
+    configureFlags = [ "--ghc-options=-fobject-determinism" ];
+  });
 }
