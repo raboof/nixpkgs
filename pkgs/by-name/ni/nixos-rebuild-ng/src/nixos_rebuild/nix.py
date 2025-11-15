@@ -39,7 +39,7 @@ SWITCH_TO_CONFIGURATION_CMD_PREFIX: Final = [
     "NIXOS_INSTALL_BOOTLOADER",
     "--collect",
     "--no-ask-password",
-    #"--pipe",
+    "--pipe",
     "--quiet",
     "--service-type=exec",
     "--unit=nixos-rebuild-switch-to-configuration",
@@ -673,7 +673,7 @@ def switch_to_configuration(
         )
         cmd = []
 
-    run_wrapper(
+    run_wrapperu
         [*cmd, path_to_config / "bin/switch-to-configuration", str(action)],
         extra_env={"NIXOS_INSTALL_BOOTLOADER": "1" if install_bootloader else "0"},
         remote=target_host,
