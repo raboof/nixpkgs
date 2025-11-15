@@ -18,9 +18,9 @@ rustPlatform.buildRustPackage {
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ dbus ];
 
-  postFixup = ''
-    # tralala
-  '';
+#  postFixup = ''
+#    # tralala
+#  '';
 #  postFixup = ''
 #    mv $out/bin/switch-to-configuration $out/bin/.switch-wrapped
 #    cat >$out/bin/switch-to-configuration <<EOF;
