@@ -39,7 +39,7 @@ SWITCH_TO_CONFIGURATION_CMD_PREFIX: Final = [
     "NIXOS_INSTALL_BOOTLOADER",
     "--collect",
     "--no-ask-password",
-    "--pipe",
+    #"--pipe",
     "--quiet",
     "--service-type=exec",
     "--unit=nixos-rebuild-switch-to-configuration",
