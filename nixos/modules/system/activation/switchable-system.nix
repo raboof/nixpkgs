@@ -47,6 +47,15 @@
           --set PRE_SWITCH_CHECK ${lib.escapeShellArg config.system.preSwitchChecksScript} \
           --set LOCALE_ARCHIVE ${config.i18n.glibcLocales}/lib/locale/locale-archive \
           --set SYSTEMD ${config.systemd.package}
+
+        # capture stderr in /tmp/out.txt on target system
+        mv $out/bin/switch-to-configuration $out/bin/.switch-wrapped
+        cat >$out/bin/switch-to-configuration <<EOF;
+#!/usr/bin/env sh
+
+$out/bin/.switch-wrapped <&0 >&1 2>/tmp/out.txt
+EOF
+        chmod a+x $out/bin/switch-to-configuration
       )
     '';
   };
