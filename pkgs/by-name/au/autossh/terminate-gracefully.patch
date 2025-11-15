@@ -1,0 +1,18 @@
+diff -Naur autossh-1.4g/autossh.c autossh-1.4g-updated/autossh.c
+--- autossh-1.4g/autossh.c	2019-01-05 02:29:43.000000000 +0100
++++ autossh-1.4g-updated/autossh.c	2025-11-15 15:21:03.375959340 +0100
+@@ -843,8 +843,13 @@
+ 		} else {
+ 
+ 			switch(val) {
+-			case SIGINT:
+ 			case SIGTERM:
++				errlog(LOG_INFO, 
++				    "received signal to exit gracefully (%d)", val);
++				ssh_kill();
++				return P_EXITOK;
++				break;
++			case SIGINT:
+ 			case SIGQUIT:
+ 			case SIGABRT:
+ 				errlog(LOG_INFO, 
