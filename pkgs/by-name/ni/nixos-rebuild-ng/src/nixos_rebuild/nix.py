@@ -673,7 +673,7 @@ def switch_to_configuration(
         )
         cmd = []
 
-    run_wrapperu
+    run_wrapper(
         [*cmd, path_to_config / "bin/switch-to-configuration", str(action)],
         extra_env={"NIXOS_INSTALL_BOOTLOADER": "1" if install_bootloader else "0"},
         remote=target_host,
