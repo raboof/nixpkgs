@@ -123,6 +123,7 @@ impl From<&Action> for &'static str {
 // Allow for this switch-to-configuration to remain consistent with the perl implementation.
 // Perl's "die" uses errno to set the exit code: https://perldoc.perl.org/perlvar#%24%21
 fn die() -> ! {
+    eprintln!("XXXX die die die");
     let code = match std::io::Error::last_os_error().raw_os_error().unwrap_or(1) {
         // Ensure that even if errno did not point to a helpful error code, we still have a
         // non-zero exit code
@@ -1401,6 +1402,7 @@ won't take effect until you reboot the system.
         .canonicalize()
         .unwrap_or_else(|_| PathBuf::from("/unknown"));
     let Ok(new_pid1_path) = new_systemd.join("lib/systemd/systemd").canonicalize() else {
+        eprintln!("kinda crazy");
         die();
     };
     let new_systemd_system_config = toplevel
