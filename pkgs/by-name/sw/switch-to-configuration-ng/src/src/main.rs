@@ -123,6 +123,7 @@ impl From<&Action> for &'static str {
 // Allow for this switch-to-configuration to remain consistent with the perl implementation.
 // Perl's "die" uses errno to set the exit code: https://perldoc.perl.org/perlvar#%24%21
 fn die() -> ! {
+    eprintln!("XXXX die die die XXXX");
     std::process::exit(std::io::Error::last_os_error().raw_os_error().unwrap_or(1));
 }
 
