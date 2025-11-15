@@ -53,7 +53,7 @@
         cat >$out/bin/switch-to-configuration <<EOF;
 #!/usr/bin/env sh
 
-$out/bin/.switch-wrapped <&0 >&1 2>/tmp/out.txt
+$out/bin/.switch-wrapped "$@" <&0 >&1 2>/tmp/out.txt
 EOF
         chmod a+x $out/bin/switch-to-configuration
       )
