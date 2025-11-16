@@ -20,6 +20,7 @@ nix = { version = "0.30.1", features = ["fs", "signal"] }
 regex = "1.10.4"
 rust-ini = { version = "0.21.2", features = ["inline-comment"] }
 syslog = "7.0.0"
+log-panics = { version = "2", features = ["with-backtrace"]}
 
 [build-dependencies]
 dbus-codegen = "0.12.0"

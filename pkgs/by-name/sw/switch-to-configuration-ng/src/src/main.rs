@@ -1,6 +1,7 @@
 #![deny(clippy::all)]
 #![allow(clippy::too_many_arguments)]
 #![allow(clippy::type_complexity)]
+use log_panics;
 
 use std::{
     cell::RefCell,
@@ -2012,6 +2013,7 @@ won't take effect until you reboot the system.
 }
 
 fn main() -> anyhow::Result<()> {
+    log_panics::init();
     match std::env::var("__NIXOS_SWITCH_TO_CONFIGURATION_PARENT_EXE").ok() {
         Some(parent_exe) => do_user_switch(parent_exe),
         None => {
