@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import shlex
+import shutil
 import subprocess
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -82,6 +83,53 @@ def cleanup_ssh() -> None:
 
 
 atexit.register(cleanup_ssh)
+
+def run_wrapper_bg(
+    args: Args,
+    remote: Remote | None = None,
+    sudo: bool = False,
+):
+    "Wrapper around `subprocess.Popen` that supports extra functionality."
+    env = None
+    run_args = args
+
+    if remote:
+        if sudo:
+            if remote.sudo_password:
+                raise ValueError("sudo_password not yet supported for run_wrapper_bg")
+            else:
+                args = [shutil.which("sudo"), *args]
+        run_args = [
+            "ssh",
+            *remote.opts,
+            *SSH_DEFAULT_OPTS,
+            remote.host,
+            "--",
+            # SSH will join the parameters here and pass it to the shell, so we
+            # need to quote it to avoid issues.
+            # We can't use `shlex.join`, otherwise we will hit MAX_ARG_STRLEN
+            # limits when the command becomes too big.
+            *[shlex.quote(str(a)) for a in args],
+        ]
+    else:
+        if sudo:
+            run_args = ["sudo", *run_args]
+
+    logger.debug(
+        "calling Popen with args=%r",
+        run_args,
+    )
+
+    r = subprocess.Popen(
+        run_args,
+        env=env,
+        # Hope nobody is using NixOS with non-UTF8 encodings, but
+        # "surrogateescape" should still work in those systems.
+        text=True,
+        errors="surrogateescape",
+    )
+
+    return r
 
 
 def run_wrapper(
