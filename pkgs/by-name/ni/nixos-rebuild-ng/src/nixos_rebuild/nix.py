@@ -24,7 +24,7 @@ from .models import (
     Profile,
     Remote,
 )
-from .process import SSH_DEFAULT_OPTS, run_wrapper
+from .process import SSH_DEFAULT_OPTS, run_wrapper, run_wrapper_bg, which
 from .utils import Args, dict_to_flags
 
 FLAKE_FLAGS: Final = ["--extra-experimental-features", "nix-command flakes"]
@@ -38,8 +38,8 @@ SWITCH_TO_CONFIGURATION_CMD_PREFIX: Final = [
     "-E",
     "NIXOS_INSTALL_BOOTLOADER",
     "--collect",
+    "--wait",
     "--no-ask-password",
-    "--pipe",
     "--quiet",
     "--service-type=exec",
     "--unit=nixos-rebuild-switch-to-configuration",
@@ -676,12 +676,37 @@ def switch_to_configuration(
         )
         cmd = []
 
-    run_wrapper(
-        [*cmd, path_to_config / "bin/switch-to-configuration", str(action)],
-        extra_env={"NIXOS_INSTALL_BOOTLOADER": "1" if install_bootloader else "0"},
-        remote=target_host,
-        sudo=sudo,
-    )
+    journalctl = None
+    unit = "nixos-rebuild-switch-to-configuration"
+    try:
+        journalctl = run_wrapper_bg(
+            [
+                which("journalctl"),
+                "-f",
+                f"--unit={unit}",
+                "--output=cat",
+                "--since=now",
+            ],
+            remote=target_host,
+            sudo=sudo,
+        )
+
+        run_wrapper(
+            [*cmd, path_to_config / "bin/switch-to-configuration", str(action)],
+            extra_env={"NIXOS_INSTALL_BOOTLOADER": "1" if install_bootloader else "0"},
+            remote=target_host,
+            sudo=sudo,
+        )
+    except KeyboardInterrupt:
+        run_wrapper(
+            ["systemctl", "stop", unit],
+            remote=target_host,
+            sudo=sudo,
+        )
+        raise
+    finally:
+        if journalctl:
+            journalctl.terminate()
 
 
 def upgrade_channels(all_channels: bool = False, sudo: bool = False) -> None:
