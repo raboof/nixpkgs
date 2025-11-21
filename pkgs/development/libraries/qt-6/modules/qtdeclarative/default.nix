@@ -54,6 +54,7 @@ qtModule {
     "-DQt6ShaderToolsTools_DIR=${pkgsBuildBuild.qt6.qtshadertools}/lib/cmake/Qt6ShaderTools"
     # for some reason doesn't get found automatically on Darwin
     "-DPython_EXECUTABLE=${lib.getExe pkgsBuildBuild.python3}"
+    "-DQT_QML_NO_CACHEGEN=TRUE"
   ]
   # Conditional is required to prevent infinite recursion during a cross build
   ++ lib.optionals (!stdenv.buildPlatform.canExecute stdenv.hostPlatform) [
