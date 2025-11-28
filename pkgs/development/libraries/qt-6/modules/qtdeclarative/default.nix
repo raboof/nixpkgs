@@ -1,4 +1,5 @@
 {
+  fetchFromGitHub,
   qtModule,
   qtbase,
   qtlanguageserver,
@@ -15,6 +16,13 @@
 qtModule {
   pname = "qtdeclarative";
 
+  src = fetchFromGitHub {
+    owner = "raboof";
+    repo = "qtdeclarative";
+    # explicit-deps
+    rev = "fb1f4937db81e57895baf259916bc615c5f3845e";
+    hash = "sha256-ibLXw3IJ6pdoVvp2jbR2zoO1ABn5iopOt4tOMMXBFRE=";
+  };
   propagatedBuildInputs = [
     qtbase
     qtlanguageserver
