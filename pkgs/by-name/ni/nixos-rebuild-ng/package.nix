@@ -99,6 +99,7 @@ python3Packages.buildPythonApplication rec {
           # nixos-rebuild-install-bootloader
           nixos-rebuild-specialisations
           nixos-rebuild-target-host
+          nixos-rebuild-target-host-interrupted
           ;
         repl = callPackage ./tests/repl.nix { };
         # NOTE: this is a passthru test rather than a build-time test because we
