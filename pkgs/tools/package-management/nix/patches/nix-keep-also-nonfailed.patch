@@ -1,0 +1,26 @@
+diff --git a/src/libstore/unix/build/derivation-builder.cc b/src/libstore/unix/build/derivation-builder.cc
+index 333c4dff8..908d0e10a 100644
+--- a/src/libstore/unix/build/derivation-builder.cc
++++ b/src/libstore/unix/build/derivation-builder.cc
+@@ -1763,11 +1763,18 @@ SingleDrvOutputs DerivationBuilderImpl::registerOutputs()
+ 
+             if (store.isValidPath(newInfo.path)) {
+                 ValidPathInfo oldInfo(*store.queryPathInfo(newInfo.path));
++                if (settings.keepFailed) {
++                    auto dst = store.toRealPath(finalDestPath + ".check");
++                    deletePath(dst);
++                    movePath(actualPath, dst);
++                }
+                 if (newInfo.narHash != oldInfo.narHash) {
+-                    if (settings.runDiffHook || settings.keepFailed) {
++                    if (settings.runDiffHook) {
+                         auto dst = store.toRealPath(finalDestPath + ".check");
+-                        deletePath(dst);
+-                        movePath(actualPath, dst);
++                        if (!settings.keepFailed) {
++                            deletePath(dst);
++                            movePath(actualPath, dst);
++                        }
+ 
+                         handleDiffHook(
+                             buildUser ? buildUser->getUID() : getuid(),
