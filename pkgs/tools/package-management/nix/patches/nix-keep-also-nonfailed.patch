@@ -1,26 +1,32 @@
+commit 96346efdaf44e6d31e474c760fbf96ddfb468f4b
+Author: Arnout Engelen <arnout@bzzt.net>
+Date:   Wed Nov 26 09:26:01 2025 +0100
+
+    Keep build dir even when not failed
+
 diff --git a/src/libstore/unix/build/derivation-builder.cc b/src/libstore/unix/build/derivation-builder.cc
-index 333c4dff8..908d0e10a 100644
+index 333c4dff8..9e12c2a88 100644
 --- a/src/libstore/unix/build/derivation-builder.cc
 +++ b/src/libstore/unix/build/derivation-builder.cc
-@@ -1763,11 +1763,18 @@ SingleDrvOutputs DerivationBuilderImpl::registerOutputs()
+@@ -1902,7 +1902,7 @@ void DerivationBuilderImpl::cleanupBuild(bool force)
  
-             if (store.isValidPath(newInfo.path)) {
-                 ValidPathInfo oldInfo(*store.queryPathInfo(newInfo.path));
-+                if (settings.keepFailed) {
-+                    auto dst = store.toRealPath(finalDestPath + ".check");
-+                    deletePath(dst);
-+                    movePath(actualPath, dst);
-+                }
-                 if (newInfo.narHash != oldInfo.narHash) {
--                    if (settings.runDiffHook || settings.keepFailed) {
-+                    if (settings.runDiffHook) {
-                         auto dst = store.toRealPath(finalDestPath + ".check");
--                        deletePath(dst);
--                        movePath(actualPath, dst);
-+                        if (!settings.keepFailed) {
-+                            deletePath(dst);
-+                            movePath(actualPath, dst);
-+                        }
+         /* Don't keep temporary directories for builtins because they
+            might have privileged stuff (like a copy of netrc). */
+-        if (settings.keepFailed && !force && !drv.isBuiltin()) {
++        if (settings.keepFailed && !drv.isBuiltin()) {
+             printError("note: keeping build directory '%s'", tmpDir);
+             chmod(topTmpDir.c_str(), 0755);
+             chmod(tmpDir.c_str(), 0755);
+diff --git a/tests/functional/check.sh b/tests/functional/check.sh
+index 260506138..ca8f49904 100755
+--- a/tests/functional/check.sh
++++ b/tests/functional/check.sh
+@@ -72,7 +72,7 @@ checkBuildTempDirRemoved "$TEST_ROOT/log"
+ nix-build check.nix -A deterministic --argstr checkBuildId "$checkBuildId" \
+     --no-out-link --check --keep-failed 2> "$TEST_ROOT/log"
+ if grepQuiet 'may not be deterministic' "$TEST_ROOT/log"; then false; fi
+-checkBuildTempDirRemoved "$TEST_ROOT/log"
++#checkBuildTempDirRemoved "$TEST_ROOT/log"
  
-                         handleDiffHook(
-                             buildUser ? buildUser->getUID() : getuid(),
+ nix-build check.nix -A nondeterministic --argstr checkBuildId "$checkBuildId" \
+     --no-out-link 2> "$TEST_ROOT/log"
