@@ -1,0 +1,16 @@
+diff --git a/build/Gruntfile.js b/build/Gruntfile.js
+index 044fa02213..d6b43833f2 100644
+--- a/Gruntfile.js
++++ b/Gruntfile.js
+@@ -493,7 +493,10 @@ module.exports = function(grunt) {
+                         comments: false,
+                         preamble: "/* minified by terser */",
+                     },
+-                    sourceMap: true,
++                    sourceMap: {
++                        filename: packageFile['main']['js']['requirejs']['options']['out'] + '.map',
++                        url: require('path').basename(packageFile['main']['js']['requirejs']['options']['out']) + '.map',
++                    },
+                 },
+                 build: {
+                     src: [packageFile['main']['js']['requirejs']['options']['out']],

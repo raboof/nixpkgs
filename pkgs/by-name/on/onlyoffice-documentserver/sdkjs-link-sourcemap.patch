@@ -1,0 +1,26 @@
+diff --git a/build/Gruntfile.js b/build/Gruntfile.js
+index 0eff2ca3fe..098fb61596 100644
+--- a/Gruntfile.js
++++ b/Gruntfile.js
+@@ -262,6 +262,8 @@ module.exports = function(grunt) {
+ 	license = license.replace('@@PublisherUrl', publisherUrl);
+ 	license = license.replace('@@Version', version);
+ 	license = license.replace('@@Build', buildNumber);
++        
++        const mapSuffix = (chunkName) => grunt.option('map') ? `\n//# sourceMappingURL=${chunkName}.js.map` : '';
+ 
+ 	function getCompileConfig(sdkmin, sdkall, outmin, outall, name, pathPrefix) {
+ 		const args = compilerArgs.concat (
+@@ -275,10 +277,10 @@ module.exports = function(grunt) {
+ 		'--compilation_level=' + level,
+ 		...sdkmin.map((file) => ('--js=' + file)),
+ 		`--chunk=${outmin}:${sdkmin.length}`,
+-		`--chunk_wrapper=${outmin}:${license}\n%s`,
++		`--chunk_wrapper=${outmin}:${license}\n%s${mapSuffix(outmin)}`,
+ 		...sdkall.map((file) => ('--js=' + file)),
+ 		`--chunk=${outall}:${sdkall.length}:${outmin}`,
+-		`--chunk_wrapper=${outall}:${license}\n(function(window, undefined) {%s})(window);`,
++		`--chunk_wrapper=${outall}:${license}\n(function(window, undefined) {%s})(window);${mapSuffix(outall)}`,
+ 		`--chunk_output_path_prefix=${pathPrefix}`);
+ 		if (grunt.option('map')) {
+ 			grunt.file.mkdir(path.join('./maps'));
