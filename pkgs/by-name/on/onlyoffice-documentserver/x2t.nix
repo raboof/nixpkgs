@@ -268,12 +268,16 @@ let
       ln -s ${optipng}/bin/optipng ./node_modules/optipng-bin/vendor/optipng
 
       grunt
+      find ..
     '';
 
     installPhase = ''
       runHook preInstall
 
       mv ../deploy/web-apps $out
+
+      # e.g. formats@2.5x.svg
+      cp -r ../apps/common/main/resources/img/doc-formats/* $out/apps/common/main/resources/img/doc-formats
 
       for component in documenteditor spreadsheeteditor presentationeditor visioeditor; do
         ln -s ${web-apps-mobile}/$component/mobile/css $out/apps/$component/mobile/css
@@ -294,6 +298,9 @@ let
       rev = "aa78926242b3da023255d9c7e9180e5a3294167b";
       hash = "sha256-wZh4TH7+f1dr8sx2C3k3U8zRWLBxmKx8MocLBbPdhJA=";
     };
+    patches = [
+      ./sdkjs-link-sourcemap.patch
+    ];
     sourceRoot = "${finalAttrs.src.name}/build";
 
     postPatch = ''
@@ -315,13 +322,18 @@ let
       # the one from node_modules seems a weird hybrid between dynamic and static linking
       cp ${closurecompiler}/bin/closure-compiler node_modules/google-closure-compiler-linux/compiler
 
-      grunt
+      grunt --map=true
+      find .
     '';
 
     installPhase = ''
       runHook preInstall
 
       mv ../deploy/sdkjs $out
+      cp ./maps/word.vars.js.map $out/word/sdk-all.vars.js.map
+      cp ./maps/word.props.js.map $out/word/sdk-all.props.js.map
+      cp ./maps/word-all.js.map $out/word/sdk-all.js.map
+      cp ./maps/word-all-min.js.map $out/word/sdk-all-min.js.map
       cp ../common/device_scale.js $out/common
 
       runHook postInstall
