@@ -258,6 +258,12 @@ let
       # for device_scale.js
       chmod u+rwx ../..
       ln -s ${sdkjs.src} ../../sdkjs
+
+      echo "Merging and checking translation files"
+      cd ../translation
+      chmod u+rwx ../apps/*/main/locale/*
+      ${python3}/bin/python3 merge_and_check.py
+      cd -
     '';
 
     postBuild = ''
@@ -269,7 +275,6 @@ let
       ln -s ${optipng}/bin/optipng ./node_modules/optipng-bin/vendor/optipng
 
       grunt
-      find ..
     '';
 
     installPhase = ''
