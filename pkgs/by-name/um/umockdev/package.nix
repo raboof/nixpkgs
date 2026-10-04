@@ -84,8 +84,8 @@ stdenv.mkDerivation (finalAttrs: {
     "-Dgtk_doc=true"
   ];
 
-  # glibc valgrind can't measure musl binaries (and vice versa)
-  doCheck = stdenv.hostPlatform.libc == stdenv.buildPlatform.libc;
+  # https://github.com/NixOS/nixpkgs/issues/570197
+  doCheck = false;
 
   postPatch = ''
     # Substitute the path to this derivation in the patch we apply.
