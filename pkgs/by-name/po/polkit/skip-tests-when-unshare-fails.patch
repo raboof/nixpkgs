@@ -1,0 +1,27 @@
+commit 36ee0868ec6cedfa107cc8f543fadfffd6712590
+Author: Arnout Engelen <arnout@bzzt.net>
+Date:   Sun Oct 4 11:34:22 2026 +0200
+
+    tests: skip tests when creating user namespace fails
+    
+    When running in QEMU, creating a new user namespace currently fails
+    due to https://gitlab.com/qemu-project/qemu/-/work_items/871 . Skipping
+    these tests for now seems in line with the handling of other possible
+    errors.
+
+diff --git a/test/wrapper.py b/test/wrapper.py
+index 9547720..05c0709 100755
+--- a/test/wrapper.py
++++ b/test/wrapper.py
+@@ -32,6 +32,11 @@ def setup_test_namespace(data_dir):
+ 
+         # Overmount /etc with our own version
+         subprocess.check_call(["mount", "--bind", os.path.join(data_dir, "etc"), "/etc"])
++    except OSError:
++        # Happens when running in QEMU due to
++        # https://gitlab.com/qemu-project/qemu/-/work_items/871
++        print("Failed to set up test harness, skipping")
++        sys.exit(77)
+     except PermissionError:
+         print("Lacking permissions to set up test harness, skipping")
+         sys.exit(77)
