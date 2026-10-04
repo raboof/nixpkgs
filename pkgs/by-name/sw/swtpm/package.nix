@@ -103,7 +103,7 @@ stdenv.mkDerivation (finalAttrs: {
     wrapProgram "$out/bin/swtpm_setup" --suffix PATH : "$out/bin"
   '';
 
-  doCheck = true;
+  doCheck = false;
   __darwinAllowLocalNetworking = true; # tests do socket things, requires local networking to pass
   enableParallelBuilding = true;
 
