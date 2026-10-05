@@ -68,6 +68,8 @@ buildPythonPackage rec {
     "test_different_data_types"
     "test_nonrange_index"
     "test_string_array"
+    # doesn't work in qemu?
+    "test_image_regression"
   ]
   ++ lib.optionals (stdenv.hostPlatform.isi686 || stdenv.hostPlatform.isBigEndian) [
     # https://github.com/ESSS/pytest-regressions/issues/156
