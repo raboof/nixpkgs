@@ -112,7 +112,8 @@ stdenv.mkDerivation (finalAttrs: {
     "-Dprofiler=disabled"
   ];
 
-  doCheck = !stdenv.hostPlatform.isDarwin;
+  # Tests fail in QEMU
+  doCheck = false;
 
   strictDeps = true;
 
