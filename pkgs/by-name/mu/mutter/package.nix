@@ -194,6 +194,10 @@ stdenv.mkDerivation (finalAttrs: {
       hash = "sha256-J2eKhM3YEFEVmcpMq2SxSOsPeEWrJTv+UcBDO+gRC4M=";
       revert = true;
     })
+    (fetchpatch {
+      url = "https://gitlab.gnome.org/GNOME/mutter/-/commit/25e48d8b3f0905fa38c07340e17b0f59938d44c2.patch";
+      hash = "sha256-HxTxbqcCr9LyCIm1o4g5lZD1Ifwns9xLEnmJqpG281s=";
+    })
   ];
 
   postPatch = ''
