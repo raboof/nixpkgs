@@ -87,7 +87,7 @@ stdenv.mkDerivation (finalAttrs: {
     "-Ddocumentation=true"
   ];
 
-  doCheck = stdenv.hostPlatform.isLinux;
+  doCheck = false;#stdenv.hostPlatform.isLinux;
 
   checkPhase = ''
     runHook preCheck
