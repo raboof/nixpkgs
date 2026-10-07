@@ -195,8 +195,14 @@ stdenv.mkDerivation (finalAttrs: {
       revert = true;
     })
     (fetchpatch {
+      name = "mutter-autorotate-initialization.patch";
       url = "https://gitlab.gnome.org/GNOME/mutter/-/commit/25e48d8b3f0905fa38c07340e17b0f59938d44c2.patch";
       hash = "sha256-HxTxbqcCr9LyCIm1o4g5lZD1Ifwns9xLEnmJqpG281s=";
+    })
+    (fetchpatch {
+      name = "mutter-autorotate-restore.patch";
+      url = "https://gitlab.gnome.org/GNOME/mutter/-/commit/737d8f06873631d5c8df1fcd6ac89352a1c86d0f.patch";
+      hash = "sha256-4t4nEfhoW3meQ6vvcL2BmcKc29dPpQqxz/lNa8wtYDM=";
     })
   ];
 
